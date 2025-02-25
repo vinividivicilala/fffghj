@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farid Ardiansyah - Reminder Adzan</title>
+    <style>
+        /* Gaya CSS untuk halaman utama */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: white;
+            line-height: 1.6;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #fff;
+        }
+        .navbar .datetime {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 18px;
+        }
+        .navbar .status {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            gap: 10px;
+            margin-right: 40px;
+        }
+        .navbar .status .dots span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        .container {
+            padding: 100px 20px 20px;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .prayer-times {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .prayer-times li {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .prayer-times li span {
+            font-weight: bold;
+            color: #fff;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 10px 0;
+            margin: 20px 0;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            color: white;
+        }
+        .footer .left {
+            font-weight: bold;
+            margin-left: 20px;
+        }
+        .footer .right a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+        .footer .right a:hover {
+            text-decoration: underline;
+        }
+        .ad-notification {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #00ffcc;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .notice {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .notice a {
+            color: #00ffcc;
+            text-decoration: none;
+        }
+        .notice a:hover {
+            text-decoration: underline;
+        }
+        .analog-clock {
+            width: 150px;
+            height: 150px;
+            border: 5px solid #00ffcc;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+        }
+        .hand {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 50% 100%;
+            background-color: #00ffcc;
+        }
+        .hour-hand {
+            width: 4px;
+            height: 40px;
+            margin-top: -40px;
+        }
+        .minute-hand {
+            width: 3px;
+            height: 60px;
+            margin-top: -60px;
+        }
+        .second-hand {
+            width: 2px;
+            height: 70px;
+            margin-top: -70px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Farid Ardiansyah</h1>
+        <div class="datetime">
+            <span id="greeting"></span>
+            <span id="day"></span>
+        </div>
+        <div class="status">
+            <span id="prayerStatus">Bersedia</span>
+            <div class="dots">
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            
+
+            <h1>Jadwal Sholat Hari Ini</h1>
+            <div class="analog-clock">
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+            </div>
+            <ul id="prayerTimes" class="prayer-times"></ul>
+            <div class="countdown" id="countdown"></div>
+            <div class="marquee">
+                <span id="marqueeText">Info Jadwal Sholat Akan Muncul Di Sini</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="left">
+            Farid Ardiansyah
+        </div>
+        <div class="right">
+            <a href="mailto:faridardiansyah061@gmail.com">EMAIL</a>
+            <a href="https://www.instagram.com/fardardinsyh/">INSTAGRAM</a>
+            <a href="https://www.linkedin.com/in/farid-ardiansyah">LINKEDIN</a>
+        </div>
+    </footer>
+
+    <!-- Notifikasi Iklan -->
+    <div class="ad-notification" id="adNotification">
+        🎉 Selamat datang di halaman Farid Ardiansyah!
+    </div>
+
+    <script>
+        // Fungsi untuk menampilkan pesan selamat berdasarkan waktu
+        function updateGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            const greetingElement = document.getElementById('greeting');
+            let greeting;
+
+            if (hour >= 5 && hour < 12) {
+                greeting = "Selamat Pagi";
+            } else if (hour >= 12 && hour < 15) {
+                greeting = "Selamat Siang";
+            } else if (hour >= 15 && hour < 18) {
+                greeting = "Selamat Sore";
+            } else {
+                greeting = "Selamat Malam";
+            }
+
+            greetingElement.textContent = greeting;
+        }
+
+        // Fungsi untuk menampilkan hari
+        function updateDay() {
+            const now = new Date();
+            const options = { weekday: 'long' };
+            const dayElement = document.getElementById('day');
+            dayElement.textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // Fungsi untuk mengambil jadwal sholat dari API
+        async function fetchPrayerTimes() {
+            const date = new Date().toISOString().split('T')[0]; // Format tanggal: YYYY-MM-DD
+            const city = "Jakarta"; // Lokasi: Jakarta
+            const country = "Indonesia"; // Negara: Indonesia
+
+            const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${date}?city=${city}&country=${country}&method=20`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const timings = data.data.timings;
+
+                // Menampilkan jadwal sholat
+                displayPrayerTimes(timings);
+                // Memeriksa waktu sholat
+                checkPrayerTime(timings);
+                // Memulai countdown
+                startCountdown(timings);
+            } catch (error) {
+                console.error("Gagal mengambil jadwal sholat:", error);
+            }
+        }
+
+        // Fungsi untuk menampilkan waktu sholat
+        function displayPrayerTimes(timings) {
+            const prayerTimesElement = document.getElementById('prayerTimes');
+            prayerTimesElement.innerHTML = `
+                <li><span>Subuh:</span> ${timings.Fajr}</li>
+                <li><span>Dzuhur:</span> ${timings.Dhuhr}</li>
+                <li><span>Ashar:</span> ${timings.Asr}</li>
+                <li><span>Maghrib:</span> ${timings.Maghrib}</li>
+                <li><span>Isya:</span> ${timings.Isha}</li>
+            `;
+        }
+
+        // Fungsi untuk memeriksa waktu sholat dan memberikan notifikasi
+        function checkPrayerTime(timings) {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            let isPrayerTime = false;
+
+            Object.entries(timings).forEach(([prayer, time]) => {
+                if (currentTime === time) {
+                    alert(`Waktu sholat ${prayer} telah tiba!`);
+                    isPrayerTime = true;
+                }
+            });
+
+            // Jika tidak ada waktu sholat, tampilkan notifikasi iklan
+            if (!isPrayerTime) {
+                const adNotification = document.getElementById('adNotification');
+                setTimeout(() => {
+                    adNotification.style.display = 'none';
+                }, 5000); // Notifikasi hilang setelah 5 detik
+            }
+        }
+
+        // Fungsi untuk memulai countdown
+        function startCountdown(timings) {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            let nextPrayer = null;
+            let nextPrayerTime = null;
+
+            // Cari waktu sholat berikutnya
+            Object.entries(timings).forEach(([prayer, time]) => {
+                if (time > currentTime) {
+                    if (!nextPrayer || time < nextPrayerTime) {
+                        nextPrayer = prayer;
+                        nextPrayerTime = time;
+                    }
+                }
+            });
+
+            if (nextPrayer) {
+                const nextPrayerDate = new Date(`${now.toDateString()} ${nextPrayerTime}`);
+                const timeDiff = nextPrayerDate - now;
+
+                // Update countdown setiap detik
+                const countdownInterval = setInterval(() => {
+                    const now = new Date();
+                    const timeDiff = nextPrayerDate - now;
+
+                    if (timeDiff <= 0) {
+                        clearInterval(countdownInterval);
+                        document.getElementById('prayerStatus').textContent = `Waktu sholat ${nextPrayer} telah tiba!`;
+                        document.getElementById('marqueeText').textContent = `Waktu sholat ${nextPrayer} telah tiba!`;
+                        fetchPrayerTimes(); // Ambil jadwal sholat baru
+                    } else {
+                        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                        document.getElementById('countdown').textContent = `Menuju ${nextPrayer}: ${hours} jam ${minutes} menit ${seconds} detik`;
+                        document.getElementById('marqueeText').textContent = `Menuju ${nextPrayer}: ${hours} jam ${minutes} menit ${seconds} detik`;
+                    }
+                }, 1000);
+            } else {
+                document.getElementById('countdown').textContent = "Tidak ada jadwal sholat berikutnya";
+                document.getElementById('marqueeText').textContent = "Tidak ada jadwal sholat berikutnya";
+            }
+        }
+
+        // Fungsi untuk mengupdate jam analog
+        function updateAnalogClock() {
+            const now = new Date();
+            const hour = now.getHours() % 12;
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const secondHand = document.getElementById('secondHand');
+
+            const hourDeg = (hour * 30) + (minute * 0.5);
+            const minuteDeg = (minute * 6) + (second * 0.1);
+            const secondDeg = second * 6;
+
+            hourHand.style.transform = `rotate(${hourDeg}deg)`;
+            minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+            secondHand.style.transform = `rotate(${secondDeg}deg)`;
+        }
+
+        // Memperbarui pesan selamat, hari, dan jam analog setiap detik
+        setInterval(() => {
+            updateGreeting();
+            updateDay();
+            updateAnalogClock();
+        }, 1000);
+
+        // Panggil sekali saat halaman dimuat
+        updateGreeting();
+        updateDay();
+        updateAnalogClock();
+        fetchPrayerTimes(); // Mengambil jadwal sholat dari API
+    </script>
+</body>
+</html>
